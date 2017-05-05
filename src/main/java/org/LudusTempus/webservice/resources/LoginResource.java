@@ -8,37 +8,55 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import com.sun.research.ws.wadl.Response;
 import brugerautorisation.transport.soap.Brugeradmin;
+import database.SQLFunctions;
+import org.eclipse.persistence.internal.oxm.Constants;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
+import static database.SQLFunctions.*;
+
 @Path("/brugerautorisation")
 public class LoginResource {
 	
-	@GET
-	@Path("/hentBruger={studieNr}+{password}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public brugerautorisation.data.Bruger getUser(@PathParam("studieNr") String studieNr, @PathParam("password") String password) throws MalformedURLException {
-		
-		brugerautorisation.data.Bruger b = null;
-		
-		URL url = new URL("http://javabog.dk:9901/brugeradmin?wsdl");
+    @GET
+    @Path("/hentBruger={studieNr}+{password}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public brugerautorisation.data.Bruger getUser(@PathParam("studieNr") String studieNr, @PathParam("password") String password) throws MalformedURLException {
+
+        brugerautorisation.data.Bruger b = null;
+
+        URL url = new URL("http://javabog.dk:9901/brugeradmin?wsdl");
         QName qname = new QName("http://soap.transport.brugerautorisation/", "BrugeradminImplService");
         Service service = Service.create(url, qname);
-		
+
         Brugeradmin ba = service.getPort(Brugeradmin.class);
-        
+
         try {
-        b = ba.hentBruger(studieNr, password);
+            b = ba.hentBruger(studieNr, password);
         } catch(Exception e) {
-        	return b;
+            return b;
         }
-		return b;
-	}
-	
-	@GET
+        return b;
+    }
+
+
+    @GET
+    @Path("/checkBruger={studieNr}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String checkUser(@PathParam("studieNr") String studieNr)  {
+
+        SQLFunctions sql = new SQLFunctions();
+        System.out.println(sql.getUserName(studieNr));
+        return sql.getUserName(studieNr);
+
+    }
+
+
+    @GET
 	@Path("/changePW={studieNr}+{oldPassword}+{newPassword0}+{newPassword1}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public void changePW(@PathParam("studieNr") String studieNr, @PathParam("oldPassword") String oldPassword, @PathParam("newPassword0") String newPassword0, @PathParam("newPassword1") String newPassword1) throws MalformedURLException {
@@ -58,8 +76,17 @@ public class LoginResource {
         }
 		
 	}
-	
-	
+
+    @OPTIONS
+    @Path("/getsample")
+    public javax.ws.rs.core.Response getOptions() {
+        return javax.ws.rs.core.Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS")
+                .header("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With").build();
+    }
+
+
 
 	
 }
