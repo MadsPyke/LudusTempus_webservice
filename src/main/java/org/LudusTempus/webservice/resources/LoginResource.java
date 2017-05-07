@@ -5,8 +5,8 @@ import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import com.sun.research.ws.wadl.Response;
 import brugerautorisation.transport.soap.Brugeradmin;
 import database.SQLFunctions;
 import org.eclipse.persistence.internal.oxm.Constants;
@@ -16,16 +16,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
+import javax.ws.rs.core.Response;
 
 import static database.SQLFunctions.*;
 
 @Path("/brugerautorisation")
 public class LoginResource {
-	
+
     @GET
     @Path("/hentBruger={studieNr}+{password}")
     @Produces(MediaType.APPLICATION_JSON)
-    public brugerautorisation.data.Bruger getUser(@PathParam("studieNr") String studieNr, @PathParam("password") String password) throws MalformedURLException {
+    public Response getUser(@PathParam("studieNr") String studieNr, @PathParam("password") String password) throws MalformedURLException {
 
         brugerautorisation.data.Bruger b = null;
 
@@ -38,9 +39,10 @@ public class LoginResource {
         try {
             b = ba.hentBruger(studieNr, password);
         } catch(Exception e) {
-            return b;
+            return null;
         }
-        return b;
+
+        return Response.ok(b).header("Access-Control-Allow-Origin", "*").build();
     }
 
 

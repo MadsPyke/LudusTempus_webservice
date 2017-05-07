@@ -8,6 +8,8 @@ import javax.ws.rs.core.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONString;
+import org.json.JSONWriter;
 
 @Path("/league")
 public class LeagueOfLegendsResource {
@@ -27,7 +29,9 @@ public class LeagueOfLegendsResource {
         Client cLient = ClientBuilder.newClient();
        Response response = cLient.target(url).request(MediaType.APPLICATION_JSON).get();
 
-       return response;
+        String s = response.readEntity(String.class);
+
+        return Response.ok(s).header("Access-Control-Allow-Origin", "*").build();
 	}
 
 	@GET
@@ -39,7 +43,10 @@ public class LeagueOfLegendsResource {
         
         Client client = ClientBuilder.newClient();
         Response response = client.target(url1).request(MediaType.APPLICATION_JSON).get();
-        return response;
+
+        String s = response.readEntity(String.class);
+
+        return Response.ok(s).header("Access-Control-Allow-Origin", "*").build();
 	}
 	
 	@GET
@@ -52,13 +59,16 @@ public class LeagueOfLegendsResource {
 		String url = "https://euw.api.riotgames.com/api/lol/EUW/v1.3/stats/by-summoner/"+ summonerID +"/ranked?season=SEASON2017&api_key="+key;
 		Client client = ClientBuilder.newClient();
 		Response response = client.target(url).request(MediaType.APPLICATION_JSON).get();
-        return response;
+
+        String s = response.readEntity(String.class);
+
+        return Response.ok(s).header("Access-Control-Allow-Origin", "*").build();
 	}
 
 	@GET
 	@Path("/getLeagues={summonerName}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getLeagueOfLegendsLeaguesInfo(@PathParam("summonerName") String summonerName) {
+	public Response getLeagueOfLegendsLeaguesInfo(@PathParam("summonerName") String summonerName) throws JSONException {
 
 		long summonerID = getSummonerID(summonerName);
 
@@ -67,7 +77,9 @@ public class LeagueOfLegendsResource {
 		Client client = ClientBuilder.newClient();
 		Response response = client.target(url).request(MediaType.APPLICATION_JSON).get();
 
-		return response;
+        String s = response.readEntity(String.class);
+
+		return Response.ok(s).header("Access-Control-Allow-Origin", "*").build();
 	}
 	
 	
