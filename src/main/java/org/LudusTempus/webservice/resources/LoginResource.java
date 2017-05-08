@@ -45,7 +45,6 @@ public class LoginResource {
         return Response.ok(b).header("Access-Control-Allow-Origin", "*").build();
     }
 
-
     @GET
     @Path("/checkBruger={studieNr}")
     @Produces(MediaType.TEXT_PLAIN)
