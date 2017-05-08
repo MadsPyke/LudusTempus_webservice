@@ -8,8 +8,6 @@ import javax.ws.rs.core.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONString;
-import org.json.JSONWriter;
 
 @Path("/league")
 public class LeagueOfLegendsResource {

@@ -54,7 +54,6 @@ public class LoginResource {
         SQLFunctions sql = new SQLFunctions();
         System.out.println(sql.getUserName(studieNr));
         return sql.getUserName(studieNr);
-
     }
 
 
