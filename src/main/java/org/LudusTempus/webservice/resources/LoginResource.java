@@ -14,6 +14,7 @@ import org.eclipse.persistence.internal.oxm.Constants;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.*;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.ws.rs.core.Response;
@@ -45,21 +46,11 @@ public class LoginResource {
         return Response.ok(b).header("Access-Control-Allow-Origin", "*").build();
     }
 
-    @GET
-    @Path("/checkBruger={studieNr}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String checkUser(@PathParam("studieNr") String studieNr)  {
-
-        SQLFunctions sql = new SQLFunctions();
-        System.out.println(sql.getUserName(studieNr));
-        return sql.getUserName(studieNr);
-    }
-
 
     @GET
 	@Path("/changePW={studieNr}+{oldPassword}+{newPassword0}+{newPassword1}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public void changePW(@PathParam("studieNr") String studieNr, @PathParam("oldPassword") String oldPassword, @PathParam("newPassword0") String newPassword0, @PathParam("newPassword1") String newPassword1) throws MalformedURLException {
+	public Response changePW(@PathParam("studieNr") String studieNr, @PathParam("oldPassword") String oldPassword, @PathParam("newPassword0") String newPassword0, @PathParam("newPassword1") String newPassword1) throws MalformedURLException {
 		
         brugerautorisation.data.Bruger b;
 
@@ -73,7 +64,11 @@ public class LoginResource {
 
         if (newPassword0.equals(newPassword1)) {
             ba.ændrAdgangskode(studieNr, oldPassword, newPassword0);
+        } else {
+            return Response.ok("The password doesn't match!").header("Access-Control-Allow-Origin", "*").build();
         }
+
+        return Response.ok("Password changed with success!").header("Access-Control-Allow-Origin", "*").build();
 		
 	}
 
